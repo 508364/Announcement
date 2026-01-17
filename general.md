@@ -1,5 +1,7 @@
 # 公告2026-1-17
 
+[赞助我](https://afdian.com/a/50_83_64)
+
 - PyInstaller_GUI_Pro 将作为 PyInstaller-GUI 的替代品更新
 - PyInstaller_GUI_Pro完成v1.0版本开发
 - FileSharePlatform 即将使用 FileSharePlatform-Adofai-Simplified-Version 的源码作为更加稳定更现代化的架构
