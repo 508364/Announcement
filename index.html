@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统维护中</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .maintenance-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .maintenance-icon {
+            font-size: 6rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+            animation: spin 3s linear infinite;
+            display: inline-block;
+            transform-origin: center;
+        }
+        .maintenance-icon.no-spin {
+            animation: none;
+        }
+        /* 暗色模式样式 */
+        body.dark-mode {
+            background-color: #1a1a1a;
+        }
+        body.dark-mode .maintenance-card {
+            background-color: #2d2d2d;
+        }
+        body.dark-mode .maintenance-title {
+            color: #e9ecef;
+        }
+        body.dark-mode .maintenance-description {
+            color: #adb5bd;
+        }
+        body.dark-mode .maintenance-info {
+            background-color: #3a3a3a;
+        }
+        body.dark-mode .info-item i {
+            color: #e9ecef;
+        }
+        body.dark-mode .info-item span {
+            color: #e9ecef;
+        }
+        body.dark-mode .refresh-note {
+            color: #6c757d;
+        }
+        body.dark-mode .maintenance-icon {
+            color: #adb5bd;
+        }
+        body.dark-mode .maintenance-icon i {
+            color: #adb5bd;
+        }
+        body.dark-mode .maintenance-title {
+            color: #e9ecef;
+        }
+        .maintenance-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        .maintenance-description {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .maintenance-info {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .info-item i {
+            margin-right: 10px;
+            color: #495057;
+        }
+        .refresh-note {
+            font-size: 0.9rem;
+            color: #adb5bd;
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @media (max-width: 576px) {
+            .maintenance-card {
+                padding: 30px 20px;
+            }
+            .maintenance-icon {
+                font-size: 4rem;
+            }
+            .maintenance-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-card">
+        <div class="maintenance-icon">
+            <i class="bi bi-gear"></i>
+        </div>
+        <h1 class="maintenance-title">系统维护中</h1>
+        <p class="maintenance-description">
+            我们正在对系统进行例行维护，以提供更好的服务体验。
+            请稍后再访问，感谢您的理解与支持！
+        </p>
+        <div class="maintenance-info">
+            <div class="info-item">
+                <i class="bi bi-clock"></i>
+                <span>预计恢复时间：数据异常</span>
+            </div>
+            <div class="info-item">
+                <i class="bi bi-window-split"></i>
+                <span>正在维护的应用：数据异常</span>
+            </div>
+            <div class="info-item">
+                <i class="bi bi-clipboard2-check"></i>
+                <span>维护内容：数据异常</span>
+            </div>
+            <div class="info-item">
+                <i class="bi bi-envelope"></i>
+                <span>紧急联系：github508364@qq.com</span>
+            </div>
+        </div>
+        <div id="return-control" class="mt-4" style="display: none;">
+            <a href="#" id="return-button" class="btn btn-success"><i class="bi bi-caret-left-fill"></i>返回应用<i class="bi bi-caret-right-fill"></i></a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 解析URL参数
+        function getUrlParams() {
+            const params = {};
+            try {
+                // 直接使用URLSearchParams API来解析参数，更可靠
+                const url = new URL(window.location.href);
+                
+                // 从searchParams中获取所有参数
+                url.searchParams.forEach((value, key) => {
+                    params[key] = value;
+                });
+                
+                // 检查哈希值中是否包含参数（处理#black?time=待定这种情况）
+                const hash = window.location.hash;
+                if (hash.includes('?')) {
+                    const hashParams = hash.split('?')[1];
+                    if (hashParams) {
+                        const pairs = hashParams.split('&');
+                        for (let pair of pairs) {
+                            const [key, value] = pair.split('=');
+                            if (key) {
+                                try {
+                                    const decodedKey = decodeURIComponent(key);
+                                    const decodedValue = decodeURIComponent(value || '');
+                                    params[decodedKey] = decodedValue;
+                                } catch (e) {
+                                    params[key] = value || '';
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('解析URL参数时出错:', error);
+                // 手动解析作为后备
+                try {
+                    const queryString = window.location.search.substring(1);
+                    const pairs = queryString.split('&');
+                    for (let pair of pairs) {
+                        const [key, value] = pair.split('=');
+                        if (key) {
+                            params[key] = value || '';
+                        }
+                    }
+                } catch (e) {
+                    console.error('后备解析也失败:', e);
+                }
+            }
+            
+            return params;
+        }
+        
+        // 处理明暗模式切换
+        function checkHashMode() {
+            let hash = window.location.hash;
+            // 提取哈希值的颜色部分，忽略后面的参数
+            if (hash.includes('?')) {
+                hash = hash.split('?')[0];
+            }
+            
+            if (hash === '#black') {
+                document.body.classList.add('dark-mode');
+            } else if (hash === '#white') {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+        
+        // 动态更新维护信息
+        function updateMaintenanceInfo() {
+            try {
+                const params = getUrlParams();
+                
+                // 打印获取到的参数，方便调试
+                console.log('获取到的参数:', params);
+                
+                // 获取返回链接
+                let returnUrl = '';
+                try {
+                    // 从哈希值中获取返回链接
+                    const hash = window.location.hash;
+                    if (hash.includes('url=')) {
+                        // 提取url参数值
+                        const urlMatch = hash.match(/url=([^&]+)/);
+                        if (urlMatch && urlMatch[1]) {
+                            returnUrl = decodeURIComponent(urlMatch[1]);
+                        }
+                    }
+                } catch (e) {
+                    console.error('获取返回链接时出错:', e);
+                }
+                
+                // 更新预计恢复时间
+                const timeElement = document.querySelector('.info-item:nth-child(1) span');
+                let showReturnControl = false;
+                
+                if (timeElement) {
+                    if (params.time !== undefined && params.time !== null && params.time !== '') {
+                        if (params.time === '待定') {
+                            timeElement.textContent = `预计恢复时间：待定`;
+                        } else {
+                            // 尝试将时间戳转换为可读时间
+                            const timestamp = parseInt(params.time);
+                            if (!isNaN(timestamp)) {
+                                const date = new Date(timestamp);
+                                if (!isNaN(date.getTime())) {
+                                    const formattedTime = date.toLocaleString('zh-CN');
+                                    timeElement.textContent = `预计恢复时间：${formattedTime}`;
+                                    
+                                    // 检查预计时间是否小于当前时间
+                                    const currentTime = new Date().getTime();
+                                    if (timestamp < currentTime) {
+                                        showReturnControl = true;
+                                    }
+                                } else {
+                                    timeElement.textContent = `预计恢复时间：数据异常`;
+                                }
+                            } else {
+                                // 直接显示非时间戳的值
+                                timeElement.textContent = `预计恢复时间：${params.time}`;
+                            }
+                        }
+                    } else {
+                        timeElement.textContent = `预计恢复时间：数据异常`;
+                    }
+                }
+                
+                // 更新正在维护的应用
+                const appElement = document.querySelector('.info-item:nth-child(2) span');
+                if (appElement) {
+                    if (params.app !== undefined && params.app !== null && params.app !== '') {
+                        appElement.textContent = `正在维护的应用：${params.app}`;
+                    } else {
+                        appElement.textContent = `正在维护的应用：数据异常`;
+                    }
+                }
+                
+                // 更新维护内容
+                const contentElement = document.querySelector('.info-item:nth-child(3) span');
+                if (contentElement) {
+                    if (params.content !== undefined && params.content !== null && params.content !== '') {
+                        contentElement.textContent = `维护内容：${params.content}`;
+                    } else {
+                        contentElement.textContent = `维护内容：数据异常`;
+                    }
+                }
+                
+                // 处理返回控件
+                const returnControl = document.getElementById('return-control');
+                const returnButton = document.getElementById('return-button');
+                const maintenanceIcon = document.querySelector('.maintenance-icon i');
+                const iconContainer = document.querySelector('.maintenance-icon');
+                const maintenanceTitle = document.querySelector('.maintenance-title');
+                const maintenanceDescription = document.querySelector('.maintenance-description');
+                
+                // 检查时间是否已过
+                if (showReturnControl) {
+                    // 时间已过的处理
+                    // 更改图标为bi bi-check-circle并停止旋转
+                    if (maintenanceIcon) {
+                        maintenanceIcon.className = 'bi bi-check-circle';
+                        maintenanceIcon.style.color = '#28a745'; // 绿色
+                    }
+                    if (iconContainer) {
+                        iconContainer.classList.add('no-spin');
+                    }
+                    
+                    // 更改标题为系统维护完成
+                    if (maintenanceTitle) {
+                        maintenanceTitle.textContent = '系统维护完成';
+                        maintenanceTitle.style.color = '#28a745'; // 绿色
+                    }
+                    
+                    // 隐藏说明文字
+                    if (maintenanceDescription) {
+                        maintenanceDescription.style.display = 'none';
+                    }
+                    
+                    // 显示返回控件（如果有返回链接）
+                    if (returnControl && returnButton && returnUrl) {
+                        returnButton.href = returnUrl;
+                        returnControl.style.display = 'block';
+                        returnControl.style.width = '100%';
+                        returnButton.style.width = '100%';
+                        returnButton.style.padding = '15px';
+                        returnButton.style.fontSize = '1.1rem';
+                    } else if (returnControl) {
+                        returnControl.style.display = 'none';
+                    }
+                } else {
+                    // 时间未过的处理
+                    // 恢复原始图标和旋转动画
+                    if (maintenanceIcon) {
+                        maintenanceIcon.className = 'bi bi-gear';
+                        maintenanceIcon.style.color = ''; // 恢复默认颜色
+                    }
+                    if (iconContainer) {
+                        iconContainer.classList.remove('no-spin');
+                    }
+                    
+                    // 恢复原始标题
+                    if (maintenanceTitle) {
+                        maintenanceTitle.textContent = '系统维护中';
+                        maintenanceTitle.style.color = ''; // 恢复默认颜色
+                    }
+                    
+                    // 显示说明文字
+                    if (maintenanceDescription) {
+                        maintenanceDescription.style.display = 'block';
+                    }
+                    
+                    // 隐藏返回控件
+                    if (returnControl) {
+                        returnControl.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('更新维护信息时出错:', error);
+                // 显示错误信息
+                const errorElement = document.createElement('div');
+                errorElement.className = 'alert alert-danger mt-3';
+                errorElement.textContent = '数据加载异常，请刷新页面重试';
+                
+                const cardElement = document.querySelector('.maintenance-card');
+                if (cardElement) {
+                    cardElement.appendChild(errorElement);
+                }
+            }
+        }
+        
+        // 初始化函数
+        function init() {
+            checkHashMode();
+            updateMaintenanceInfo();
+        }
+        
+        // 监听哈希值变化
+        window.addEventListener('hashchange', init);
+        
+        // 页面加载时初始化
+        window.addEventListener('load', init);
+        
+        // 倒计时功能
+        let countdown = 300;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                window.location.reload();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
