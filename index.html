@@ -275,14 +275,20 @@
                             // 尝试将时间戳转换为可读时间
                             const timestamp = parseInt(params.time);
                             if (!isNaN(timestamp)) {
-                                const date = new Date(timestamp);
+                                // 检查是否为秒级时间戳（小于10^13）
+                                let finalTimestamp = timestamp;
+                                if (timestamp < 10000000000) {
+                                    finalTimestamp = timestamp * 1000; // 转换为毫秒级时间戳
+                                }
+                                
+                                const date = new Date(finalTimestamp);
                                 if (!isNaN(date.getTime())) {
                                     const formattedTime = date.toLocaleString('zh-CN');
                                     timeElement.textContent = `预计恢复时间：${formattedTime}`;
                                     
                                     // 检查预计时间是否小于当前时间
                                     const currentTime = new Date().getTime();
-                                    if (timestamp < currentTime) {
+                                    if (finalTimestamp < currentTime) {
                                         showReturnControl = true;
                                     }
                                 } else {
